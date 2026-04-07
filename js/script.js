@@ -3,6 +3,9 @@ const startInput = document.getElementById('startDate');
 const endInput = document.getElementById('endDate');
 const gallery = document.getElementById('gallery');
 const getButton = document.querySelector('button');
+const modal = document.getElementById('modal');
+const modalBody = document.getElementById('modal-body');
+const modalClose = document.querySelector('.modal-close');
 
 // Call the setupDateInputs function from dateRange.js
 // This sets up the date pickers to:
@@ -42,10 +45,13 @@ function renderGallery(items) {
     const galleryItem = document.createElement('div');
     galleryItem.className = 'gallery-item';
 
-    // Handle video entries (show thumbnail with reduced opacity)
+    // Handle video entries (show thumbnail with reduced opacity and video icon)
     if (item.media_type === 'video') {
       galleryItem.innerHTML = `
-        <img src="${item.thumbnail_url || item.url}" alt="${item.title}" style="opacity: 0.5;" />
+        <div style="position:relative;">
+          <img src="${item.thumbnail_url || item.url}" alt="${item.title}" style="opacity:0.5;" />
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:40px;">▶</div>
+        </div>
         <p><strong>${item.title}</strong><br/>${item.date}</p>
       `;
     } else {
@@ -54,6 +60,8 @@ function renderGallery(items) {
         <p><strong>${item.title}</strong><br/>${item.date}</p>
       `;
     }
+
+    galleryItem.addEventListener('click', () => openModal(item));
 
     gallery.appendChild(galleryItem);
   });
@@ -82,5 +90,29 @@ getButton.addEventListener('click', async () => {
         <p>Failed to load space photos. Please try again.</p>
       </div>
     `;
+  }
+});
+
+// Open modal with full APOD details
+function openModal(item) {
+  modalBody.innerHTML = `
+    <img src="${item.url}" alt="${item.title}" />
+    <div class="modal-info">
+      <div class="modal-title">${item.title}</div>
+      <div class="modal-date">${item.date}</div>
+      <div class="modal-explanation">${item.explanation}</div>
+    </div>
+  `;
+  modal.classList.add('show');
+}
+
+// Close modal
+modalClose.addEventListener('click', () => {
+  modal.classList.remove('show');
+});
+
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) {
+    modal.classList.remove('show');
   }
 });
