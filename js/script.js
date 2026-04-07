@@ -95,11 +95,19 @@ getButton.addEventListener('click', async () => {
 
 // Open modal with full APOD details
 function openModal(item) {
-  // For videos, use thumbnail; for images, use url
-  const mediaUrl = item.media_type === 'video' ? (item.thumbnail_url || item.url) : item.url;
-  const mediaContent = item.media_type === 'video'
-    ? `<iframe src="${item.url}" width="100%" height="400" frameborder="0" allowfullscreen></iframe>`
-    : `<img src="${mediaUrl}" alt="${item.title}" />`;
+  let mediaContent = '';
+
+  if (item.media_type === 'video') {
+    // Convert YouTube watch URL to embed URL
+    let embedUrl = item.url;
+    if (item.url.includes('youtube.com/watch')) {
+      const videoId = item.url.split('v=')[1];
+      embedUrl = `https://www.youtube.com/embed/${videoId}`;
+    }
+    mediaContent = `<iframe src="${embedUrl}" width="100%" height="400" frameborder="0" allowfullscreen></iframe>`;
+  } else {
+    mediaContent = `<img src="${item.url}" alt="${item.title}" />`;
+  }
 
   modalBody.innerHTML = `
     ${mediaContent}
