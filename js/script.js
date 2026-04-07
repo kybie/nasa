@@ -10,8 +10,7 @@ const getButton = document.querySelector('button');
 // - Restrict dates to NASA's image archive (starting from 1995)
 setupDateInputs(startInput, endInput);
 
-// NASA API key — get yours at https://api.nasa.gov/
-const NASA_API_KEY = 'zXdMhqTU3ZqN7TtUWhxTfMuqaHI4NRHIVHYD6DlS';
+// NASA API key and OMDb API key are loaded from config.js
 
 // Show a loading message while fetching
 function showLoading() {
