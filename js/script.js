@@ -2,7 +2,7 @@
 const startInput = document.getElementById('startDate');
 const endInput = document.getElementById('endDate');
 const gallery = document.getElementById('gallery');
-const getButton = document.querySelector('button');
+const getButton = document.getElementById('getImages');
 const modal = document.getElementById('modal');
 const modalBody = document.getElementById('modal-body');
 const modalClose = document.querySelector('.modal-close');
@@ -37,6 +37,28 @@ async function fetchAPOD(startDate, endDate) {
   return response.json();
 }
 
+// Get the best thumbnail URL for a video APOD item
+function getVideoThumbnail(item) {
+  // Prefer the dedicated thumbnail_url field if available
+  if (item.thumbnail_url) {
+    return item.thumbnail_url;
+  }
+  // Fall back to the HD image from NASA (commonly available for video APODs)
+  // Extract the image URL from the item if available
+  if (item.url && item.url.includes('youtube')) {
+    // YouTube video — extract video ID and build thumbnail URL
+    const videoId = item.url.split('v=')[1]?.split('&')[0] || item.url.split('/').pop();
+    return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  }
+  if (item.url && item.url.includes('vimeo')) {
+    // Vimeo video — can't easily get thumbnail without extra API call
+    // Use NASA's embedded image as fallback
+    return item.url.replace('/vimeo.com/', '/vimeo.com/video/') + '/thumbnail.jpg';
+  }
+  // Default fallback
+  return 'https://apod.nasa.gov/apod/image/2604/Artemis_II_Jack_hd_1080.jpg';
+}
+
 // Render gallery items from APOD data
 function renderGallery(items) {
   gallery.innerHTML = '';
@@ -47,9 +69,10 @@ function renderGallery(items) {
 
     // Handle video entries — show thumbnail with play icon and link
     if (item.media_type === 'video') {
+      const thumbUrl = getVideoThumbnail(item);
       galleryItem.innerHTML = `
-        <div style="position:relative; background:#000;height:200px;display:flex;align-items:center;justify-content:center;text-decoration:none;">
-          <img src="https://apod.nasa.gov/apod/image/2604/Artemis_II_Jack_hd_1080.jpg" alt="${item.title}" style="width:100%;height:200px;object-fit:cover;opacity:0.6;" />
+        <div class="video-thumbnail" style="position:relative; background:#000;height:200px;display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer;">
+          <img src="${thumbUrl}" alt="${item.title}" style="width:100%;height:200px;object-fit:cover;opacity:0.6;" />
           <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:40px;color:white;text-align:center;padding:10px;">▶<br><span style="font-size:12px;">Click to play</span></div>
         </div>
         <p><strong>${item.title}</strong><br/>${item.date}</p>
@@ -98,8 +121,9 @@ function openModal(item) {
   let mediaContent = '';
 
   if (item.media_type === 'video') {
-    // For videos: use NASA thumbnail image and link to open the video
-    const thumbImg = `<img src="https://apod.nasa.gov/apod/image/2604/Artemis_II_Jack_hd_1080.jpg" alt="${item.title}" style="width:100%;display:block;" />`;
+    // For videos: use the correct thumbnail and link to open the video
+    const thumbUrl = getVideoThumbnail(item);
+    const thumbImg = `<img src="${thumbUrl}" alt="${item.title}" style="width:100%;display:block;" />`;
     const videoLink = `<a href="${item.url}" target="_blank" style="display:block;padding:10px;background:#0b3d91;color:white;text-align:center;text-decoration:none;font-weight:bold;">▶ Watch Video</a>`;
     mediaContent = thumbImg + videoLink;
   } else {
@@ -124,6 +148,13 @@ modalClose.addEventListener('click', () => {
 
 modal.addEventListener('click', (e) => {
   if (e.target === modal) {
+    modal.classList.remove('show');
+  }
+});
+
+// Close modal on ESC key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modal.classList.contains('show')) {
     modal.classList.remove('show');
   }
 });
