@@ -26,29 +26,54 @@ function showLoading() {
 async function fetchAPOD(startDate, endDate) {
   const url = `https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}&start_date=${startDate}&end_date=${endDate}`;
   const response = await fetch(url);
-  
+
   if (!response.ok) {
     throw new Error(`API error: ${response.status}`);
   }
-  
+
   return response.json();
+}
+
+// Render gallery items from APOD data
+function renderGallery(items) {
+  gallery.innerHTML = '';
+
+  items.forEach(item => {
+    const galleryItem = document.createElement('div');
+    galleryItem.className = 'gallery-item';
+
+    // Handle video entries (show thumbnail with reduced opacity)
+    if (item.media_type === 'video') {
+      galleryItem.innerHTML = `
+        <img src="${item.thumbnail_url || item.url}" alt="${item.title}" style="opacity: 0.5;" />
+        <p><strong>${item.title}</strong><br/>${item.date}</p>
+      `;
+    } else {
+      galleryItem.innerHTML = `
+        <img src="${item.url}" alt="${item.title}" />
+        <p><strong>${item.title}</strong><br/>${item.date}</p>
+      `;
+    }
+
+    gallery.appendChild(galleryItem);
+  });
 }
 
 // Handle button click
 getButton.addEventListener('click', async () => {
   const startDate = startInput.value;
   const endDate = endInput.value;
-  
+
   if (!startDate || !endDate) {
     alert('Please select a date range.');
     return;
   }
-  
+
   showLoading();
-  
+
   try {
     const data = await fetchAPOD(startDate, endDate);
-    console.log('APOD Data:', data);
+    renderGallery(data);
   } catch (error) {
     console.error('Failed to fetch APOD data:', error);
     gallery.innerHTML = `
