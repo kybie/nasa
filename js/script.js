@@ -45,12 +45,20 @@ function renderGallery(items) {
     const galleryItem = document.createElement('div');
     galleryItem.className = 'gallery-item';
 
-    // Handle video entries (show thumbnail with reduced opacity and video icon)
+    // Handle video entries (show YouTube thumbnail with play icon)
     if (item.media_type === 'video') {
+      let thumbUrl = '';
+      // Use NASA thumbnail if available, otherwise try YouTube thumbnail
+      if (item.thumbnail_url) {
+        thumbUrl = item.thumbnail_url;
+      } else if (item.url && item.url.includes('youtube.com/watch')) {
+        const videoId = item.url.split('v=')[1];
+        thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+      }
       galleryItem.innerHTML = `
         <div style="position:relative;">
-          <img src="${item.thumbnail_url || item.url}" alt="${item.title}" style="opacity:0.5;" />
-          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:40px;">▶</div>
+          ${thumbUrl ? `<img src="${thumbUrl}" alt="${item.title}" style="opacity:0.7;" />` : ''}
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:40px;color:white;">▶</div>
         </div>
         <p><strong>${item.title}</strong><br/>${item.date}</p>
       `;
