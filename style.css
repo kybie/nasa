@@ -5,10 +5,11 @@
   padding: 0;
 }
 
-/* Base page styles */
+/* Base page styles — NASA branding */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f1f1f1;
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: #000;
+  color: #fff;
   padding: 20px;
 }
 
@@ -18,7 +19,7 @@ body {
   margin: 0 auto;
 }
 
-/* Header */
+/* Header — NASA blue accent */
 .site-header {
   display: flex;
   align-items: center;
@@ -26,21 +27,36 @@ body {
   padding-top: 20px;
   padding-bottom: 20px;
   margin-bottom: 20px;
+  border-bottom: 3px solid #0b3d91;
+}
+
+/* NASA red accent stripe */
+.site-header::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: #fc3d21;
+  position: absolute;
+  bottom: 0;
 }
 
 h1 {
-  font-family: Verdana, sans-serif;
-  font-weight: bold;
-  color: #212121;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 28px;
 }
 
 /* Logo */
 .logo {
-  width: 140px;
+  width: 120px;
   margin-right: 15px;
 }
 
-/* Date‐picker & button row */
+/* Date-picker & button row */
 .filters {
   display: flex;
   flex-direction: column;
@@ -50,28 +66,39 @@ h1 {
   padding: 0 20px;
 }
 
-/* Inputs and buttons */
+/* Inputs — NASA styling */
 input[type="date"],
 button {
-  font-family: Arial, sans-serif;
-  font-weight: normal;
-  color: #666;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  color: #fff;
   padding: 10px 15px;
-  border: 1px solid #ddd;
+  border: 2px solid #0b3d91;
   border-radius: 4px;
   font-size: 16px;
   line-height: 1.4;
   width: 100%;
+  background: #0b3d91;
 }
 
-/* Button specific */
-button {
-  background-color: #d3d3d3;
-  color: black;
-  cursor: pointer;
+input[type="date"] {
+  background: #1a1a2e;
+  border-color: #0b3d91;
 }
+
+/* Button specific — NASA red hover */
+button {
+  background-color: #0b3d91;
+  color: white;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
 button:hover {
-  background-color: #bfbfbf;
+  background-color: #fc3d21;
+  border-color: #fc3d21;
 }
 
 /* Stack horizontally on wider screens */
@@ -80,7 +107,7 @@ button:hover {
     flex-direction: row;
     padding: 0;
   }
-  
+
   input[type="date"],
   button {
     width: auto;
@@ -96,21 +123,27 @@ button:hover {
   justify-content: center;
 }
 
-/* Gallery items */
+/* Gallery items — dark NASA theme */
 .gallery-item {
-  flex: 1 1 100%;  /* full width by default */
+  flex: 1 1 100%;
   min-width: 280px;
   max-width: 500px;
-  background: white;
+  background: #1a1a2e;
   padding: 10px;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(11, 61, 145, 0.4);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  border: 1px solid #0b3d91;
+  cursor: pointer;
 }
 
-/* Three columns on wider screens */
+.gallery-item:hover {
+  box-shadow: 0 4px 16px rgba(252, 61, 33, 0.3);
+  border-color: #fc3d21;
+}
+
 @media (min-width: 1000px) {
   .gallery-item {
     flex: 0 1 31%;
@@ -128,9 +161,32 @@ button:hover {
   margin-top: 10px;
   padding: 5px;
   font-size: 14px;
+  color: #fff;
 }
 
-/* Modal */
+.gallery-item strong {
+  color: #0b3d91;
+}
+
+/* Video item link button */
+.gallery-item a {
+  display: block;
+  padding: 10px;
+  background: #0b3d91;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 14px;
+}
+
+.gallery-item a:hover {
+  background: #fc3d21;
+}
+
+/* Modal — NASA dark theme */
 .modal {
   display: none;
   position: fixed;
@@ -138,7 +194,7 @@ button:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(0, 0, 0, 0.95);
   z-index: 1000;
   overflow: auto;
 }
@@ -150,7 +206,7 @@ button:hover {
 }
 
 .modal-content {
-  background-color: #000;
+  background-color: #0a0a0a;
   margin: auto;
   padding: 0;
   border-radius: 8px;
@@ -159,6 +215,7 @@ button:hover {
   max-height: 90vh;
   overflow: hidden;
   position: relative;
+  border: 2px solid #0b3d91;
 }
 
 .modal-close {
@@ -170,14 +227,17 @@ button:hover {
   font-weight: bold;
   cursor: pointer;
   z-index: 1001;
+  background: #fc3d21;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 36px;
 }
 
 .modal-close:hover {
-  color: #ccc;
-}
-
-#modal-body {
-  color: #fff;
+  background: #fff;
+  color: #fc3d21;
 }
 
 #modal-body {
@@ -198,23 +258,29 @@ button:hover {
 
 #modal-body .modal-info {
   padding: 20px;
+  background: #0a0a0a;
 }
 
 #modal-body .modal-title {
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 8px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 #modal-body .modal-date {
   font-size: 14px;
-  color: #aaa;
+  color: #fc3d21;
   margin-bottom: 15px;
+  font-weight: 600;
 }
 
 #modal-body .modal-explanation {
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.7;
+  color: #ccc;
 }
 
 /* Placeholder content */
@@ -222,10 +288,17 @@ button:hover {
   flex: 1 1 100%;
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: #fff;
 }
 
 .placeholder-icon {
   font-size: 48px;
   margin-bottom: 20px;
+}
+
+/* Loading message */
+#gallery .placeholder p {
+  color: #0b3d91;
+  font-weight: bold;
+  font-size: 18px;
 }
