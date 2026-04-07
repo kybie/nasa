@@ -45,12 +45,13 @@ function renderGallery(items) {
     const galleryItem = document.createElement('div');
     galleryItem.className = 'gallery-item';
 
-    // Handle video entries — embed NASA APOD page so video plays inline
+    // Handle video entries — show thumbnail with play icon and link
     if (item.media_type === 'video') {
-      const apDate = item.date.replace(/-/g, '').substring(2);
-      const apUrl = `https://apod.nasa.gov/apod/ap${apDate}.html`;
       galleryItem.innerHTML = `
-        <iframe src="${apUrl}" style="width:100%;height:220px;border:none;" loading="lazy"></iframe>
+        <div style="position:relative; background:#000;height:200px;display:flex;align-items:center;justify-content:center;text-decoration:none;">
+          <img src="https://apod.nasa.gov/apod/image/2604/Artemis_II_Jack_hd_1080.jpg" alt="${item.title}" style="width:100%;height:200px;object-fit:cover;opacity:0.6;" />
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:40px;color:white;text-align:center;padding:10px;">▶<br><span style="font-size:12px;">Click to play</span></div>
+        </div>
         <p><strong>${item.title}</strong><br/>${item.date}</p>
       `;
     } else {
@@ -97,10 +98,10 @@ function openModal(item) {
   let mediaContent = '';
 
   if (item.media_type === 'video') {
-    // Embed the NASA APOD page for videos
-    const apDate = item.date.replace(/-/g, '').substring(2);
-    const apUrl = `https://apod.nasa.gov/apod/ap${apDate}.html`;
-    mediaContent = `<iframe src="${apUrl}" style="width:100%;height:450px;border:none;" loading="lazy"></iframe>`;
+    // For videos: use NASA thumbnail image and link to open the video
+    const thumbImg = `<img src="https://apod.nasa.gov/apod/image/2604/Artemis_II_Jack_hd_1080.jpg" alt="${item.title}" style="width:100%;display:block;" />`;
+    const videoLink = `<a href="${item.url}" target="_blank" style="display:block;padding:10px;background:#0b3d91;color:white;text-align:center;text-decoration:none;font-weight:bold;">▶ Watch Video</a>`;
+    mediaContent = thumbImg + videoLink;
   } else {
     mediaContent = `<img src="${item.url}" alt="${item.title}" />`;
   }
