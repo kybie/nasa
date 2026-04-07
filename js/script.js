@@ -45,12 +45,12 @@ function renderGallery(items) {
     const galleryItem = document.createElement('div');
     galleryItem.className = 'gallery-item';
 
-    // Handle video entries (show placeholder with play icon)
+    // Handle video entries — embed NASA APOD page so video plays inline
     if (item.media_type === 'video') {
+      const apDate = item.date.replace(/-/g, '').substring(2);
+      const apUrl = `https://apod.nasa.gov/apod/ap${apDate}.html`;
       galleryItem.innerHTML = `
-        <div style="position:relative; background: #1a1a2e; height: 200px; display: flex; align-items: center; justify-content: center;">
-          <div style="font-size:40px; color: white;">▶</div>
-        </div>
+        <iframe src="${apUrl}" style="width:100%;height:220px;border:none;" loading="lazy"></iframe>
         <p><strong>${item.title}</strong><br/>${item.date}</p>
       `;
     } else {
@@ -97,14 +97,10 @@ function openModal(item) {
   let mediaContent = '';
 
   if (item.media_type === 'video') {
-    // Use iframe for YouTube, video tag for direct MP4
-    if (item.url.includes('youtube.com/watch')) {
-      const videoId = item.url.split('v=')[1];
-      mediaContent = `<iframe src="https://www.youtube.com/embed/${videoId}" width="100%" height="400" frameborder="0" allowfullscreen></iframe>`;
-    } else {
-      // NASA-hosted MP4 — use video tag
-      mediaContent = `<video src="${item.url}" width="100%" height="400" controls autoplay></video>`;
-    }
+    // Embed the NASA APOD page for videos
+    const apDate = item.date.replace(/-/g, '').substring(2);
+    const apUrl = `https://apod.nasa.gov/apod/ap${apDate}.html`;
+    mediaContent = `<iframe src="${apUrl}" style="width:100%;height:450px;border:none;" loading="lazy"></iframe>`;
   } else {
     mediaContent = `<img src="${item.url}" alt="${item.title}" />`;
   }
