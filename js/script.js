@@ -95,8 +95,14 @@ getButton.addEventListener('click', async () => {
 
 // Open modal with full APOD details
 function openModal(item) {
+  // For videos, use thumbnail; for images, use url
+  const mediaUrl = item.media_type === 'video' ? (item.thumbnail_url || item.url) : item.url;
+  const mediaContent = item.media_type === 'video'
+    ? `<iframe src="${item.url}" width="100%" height="400" frameborder="0" allowfullscreen></iframe>`
+    : `<img src="${mediaUrl}" alt="${item.title}" />`;
+
   modalBody.innerHTML = `
-    <img src="${item.url}" alt="${item.title}" />
+    ${mediaContent}
     <div class="modal-info">
       <div class="modal-title">${item.title}</div>
       <div class="modal-date">${item.date}</div>

@@ -157,7 +157,7 @@ button:hover {
   max-width: 900px;
   width: 90%;
   max-height: 90vh;
-  overflow-y: auto;
+  overflow: hidden;
   position: relative;
 }
 
@@ -180,9 +180,20 @@ button:hover {
   color: #fff;
 }
 
+#modal-body {
+  color: #fff;
+  overflow: hidden;
+}
+
 #modal-body img {
   width: 100%;
   display: block;
+}
+
+#modal-body iframe {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16/9;
 }
 
 #modal-body .modal-info {
