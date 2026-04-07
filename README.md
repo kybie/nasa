@@ -50,7 +50,7 @@ https://api.nasa.gov/planetary/apod
 - [x] Loading message during fetch
 
 ### LevelUp (Optional)
-- [ ] Handle video APOD entries (embed or link)
+- [x] Handle video APOD entries (embed or link)
 - [x] Random "Did You Know?" space fact on load
 - [x] Hover zoom effect on gallery images
 

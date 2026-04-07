@@ -77,9 +77,9 @@ function getVideoThumbnail(item) {
     return item.thumbnail_url;
   }
   // YouTube video — extract video ID and build thumbnail URL
-  if (item.url && item.url.includes('youtube')) {
-    const videoId = item.url.split('v=')[1]?.split('&')[0] || item.url.split('/').pop();
-    return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  if (item.url && item.url.includes('youtube.com/watch')) {
+    const videoId = item.url.split('v=')[1]?.split('&')[0];
+    if (videoId) return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
   }
   // Vimeo video — use NASA embedded image as fallback
   if (item.url && item.url.includes('vimeo')) {
@@ -87,6 +87,27 @@ function getVideoThumbnail(item) {
   }
   // Default fallback
   return 'https://apod.nasa.gov/apod/image/2604/Artemis_II_Jack_hd_1080.jpg';
+}
+
+// Build the embed URL for a video APOD item
+function getVideoEmbedUrl(item) {
+  // YouTube — convert watch URL to embed URL
+  if (item.url && item.url.includes('youtube.com/watch')) {
+    const videoId = item.url.split('v=')[1]?.split('&')[0];
+    if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+  }
+  // YouTube short URL
+  if (item.url && item.url.includes('youtu.be/')) {
+    const videoId = item.url.split('youtu.be/')[1]?.split('?')[0];
+    if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+  }
+  // Vimeo — use their embed player
+  if (item.url && item.url.includes('vimeo.com/')) {
+    const videoId = item.url.split('vimeo.com/')[1]?.split('?')[0];
+    if (videoId) return `https://player.vimeo.com/video/${videoId}`;
+  }
+  // Fall back to opening the URL in a new tab
+  return item.url;
 }
 
 // Render gallery items from APOD data
@@ -151,11 +172,17 @@ function openModal(item) {
   let mediaContent = '';
 
   if (item.media_type === 'video') {
-    // For videos: use the correct thumbnail and link to open the video
-    const thumbUrl = getVideoThumbnail(item);
-    const thumbImg = `<img src="${thumbUrl}" alt="${item.title}" style="width:100%;display:block;" />`;
-    const videoLink = `<a href="${item.url}" target="_blank" style="display:block;padding:10px;background:#0b3d91;color:white;text-align:center;text-decoration:none;font-weight:bold;">▶ Watch Video</a>`;
-    mediaContent = thumbImg + videoLink;
+    // For videos: embed inline in an iframe
+    const embedUrl = getVideoEmbedUrl(item);
+    if (embedUrl.includes('youtube.com/embed') || embedUrl.includes('player.vimeo.com')) {
+      mediaContent = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen style="width:100%;aspect-ratio:16/9;display:block;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+    } else {
+      // Fall back to thumbnail with link
+      const thumbUrl = getVideoThumbnail(item);
+      const thumbImg = `<img src="${thumbUrl}" alt="${item.title}" style="width:100%;display:block;" />`;
+      const videoLink = `<a href="${item.url}" target="_blank" style="display:block;padding:10px;background:#0b3d91;color:white;text-align:center;text-decoration:none;font-weight:bold;">▶ Watch Video</a>`;
+      mediaContent = thumbImg + videoLink;
+    }
   } else {
     mediaContent = `<img src="${item.url}" alt="${item.title}" />`;
   }
