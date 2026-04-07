@@ -45,20 +45,11 @@ function renderGallery(items) {
     const galleryItem = document.createElement('div');
     galleryItem.className = 'gallery-item';
 
-    // Handle video entries (show YouTube thumbnail with play icon)
+    // Handle video entries (show placeholder with play icon)
     if (item.media_type === 'video') {
-      let thumbUrl = '';
-      // Use NASA thumbnail if available, otherwise try YouTube thumbnail
-      if (item.thumbnail_url) {
-        thumbUrl = item.thumbnail_url;
-      } else if (item.url && item.url.includes('youtube.com/watch')) {
-        const videoId = item.url.split('v=')[1];
-        thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-      }
       galleryItem.innerHTML = `
-        <div style="position:relative;">
-          ${thumbUrl ? `<img src="${thumbUrl}" alt="${item.title}" style="opacity:0.7;" />` : ''}
-          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:40px;color:white;">▶</div>
+        <div style="position:relative; background: #1a1a2e; height: 200px; display: flex; align-items: center; justify-content: center;">
+          <div style="font-size:40px; color: white;">▶</div>
         </div>
         <p><strong>${item.title}</strong><br/>${item.date}</p>
       `;
@@ -106,13 +97,14 @@ function openModal(item) {
   let mediaContent = '';
 
   if (item.media_type === 'video') {
-    // Convert YouTube watch URL to embed URL
-    let embedUrl = item.url;
+    // Use iframe for YouTube, video tag for direct MP4
     if (item.url.includes('youtube.com/watch')) {
       const videoId = item.url.split('v=')[1];
-      embedUrl = `https://www.youtube.com/embed/${videoId}`;
+      mediaContent = `<iframe src="https://www.youtube.com/embed/${videoId}" width="100%" height="400" frameborder="0" allowfullscreen></iframe>`;
+    } else {
+      // NASA-hosted MP4 — use video tag
+      mediaContent = `<video src="${item.url}" width="100%" height="400" controls autoplay></video>`;
     }
-    mediaContent = `<iframe src="${embedUrl}" width="100%" height="400" frameborder="0" allowfullscreen></iframe>`;
   } else {
     mediaContent = `<img src="${item.url}" alt="${item.title}" />`;
   }
