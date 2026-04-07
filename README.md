@@ -51,7 +51,7 @@ https://api.nasa.gov/planetary/apod
 
 ### LevelUp (Optional)
 - [ ] Handle video APOD entries (embed or link)
-- [ ] Random "Did You Know?" space fact on load
+- [x] Random "Did You Know?" space fact on load
 - [x] Hover zoom effect on gallery images
 
 ### Reflections

@@ -15,6 +15,39 @@ setupDateInputs(startInput, endInput);
 
 // NASA API key and OMDb API key are loaded from config.js
 
+// ─── Random Space Fact on Load ───────────────────────────────────────────────
+const spaceFacts = [
+  "A day on Venus is longer than its year — Venus takes 243 Earth days to rotate once but only 225 days to orbit the Sun.",
+  "Neutron stars are so dense that a single teaspoon of their material would weigh about 6 billion tons on Earth.",
+  "The Sun accounts for 99.86% of all the mass in our entire solar system.",
+  "There are more trees on Earth (~3 trillion) than stars in the Milky Way (~100–400 billion).",
+  "Olympus Mons on Mars is the largest volcano in the solar system — roughly 3 times the height of Mount Everest.",
+  "The largest known structure in the universe is the Hercules-Corona Borealis Great Wall, spanning 10 billion light-years.",
+  "One million Earths could fit inside the Sun.",
+  "Saturn would float in water — its density is less than that of water (0.687 g/cm³ vs 1 g/cm³).",
+  "The footprints left by Apollo astronauts on the Moon will last millions of years because there is no wind or water to erode them.",
+  "A black hole the mass of a coin would have stronger gravity than Earth — it would sink straight through the planet.",
+  "The International Space Station travels at about 17,500 mph and orbits Earth 16 times per day.",
+  "Jupiter's Great Red Spot is a storm that has been raging for at least 400 years and is larger than Earth.",
+  "Light from the Sun takes about 8 minutes and 20 seconds to reach Earth.",
+  "Mars has the largest dust storms in the solar system, sometimes covering the entire planet for months.",
+  "The core of the Sun reaches temperatures of about 27 million°F — hot enough to fuse hydrogen into helium.",
+  "Europa, one of Jupiter's moons, is believed to have a subsurface ocean with more water than all of Earth's oceans combined.",
+  "The Voyager 1 spacecraft is the most distant human-made object, over 15 billion miles from Earth — and still sending data.",
+  "A year on Mercury (88 Earth days) is shorter than its day (59 Earth days).",
+  "The observable universe contains roughly 200 billion galaxies.",
+  "Pluto's heart-shaped glacier (Tombaugh Regio) is made of nitrogen ice and is bigger than Texas."
+];
+
+// Pick one random fact and display it in the placeholder area
+function showRandomFact() {
+  const factEl = document.getElementById('spaceFact');
+  if (!factEl) return;
+  const randomIndex = Math.floor(Math.random() * spaceFacts.length);
+  factEl.textContent = `💡 Did you know? ${spaceFacts[randomIndex]}`;
+  factEl.style.display = 'block';
+}
+
 // Show a loading message while fetching
 function showLoading() {
   gallery.innerHTML = `
@@ -43,17 +76,14 @@ function getVideoThumbnail(item) {
   if (item.thumbnail_url) {
     return item.thumbnail_url;
   }
-  // Fall back to the HD image from NASA (commonly available for video APODs)
-  // Extract the image URL from the item if available
+  // YouTube video — extract video ID and build thumbnail URL
   if (item.url && item.url.includes('youtube')) {
-    // YouTube video — extract video ID and build thumbnail URL
     const videoId = item.url.split('v=')[1]?.split('&')[0] || item.url.split('/').pop();
     return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
   }
+  // Vimeo video — use NASA embedded image as fallback
   if (item.url && item.url.includes('vimeo')) {
-    // Vimeo video — can't easily get thumbnail without extra API call
-    // Use NASA's embedded image as fallback
-    return item.url.replace('/vimeo.com/', '/vimeo.com/video/') + '/thumbnail.jpg';
+    return 'https://apod.nasa.gov/apod/image/2604/Artemis_II_Jack_hd_1080.jpg';
   }
   // Default fallback
   return 'https://apod.nasa.gov/apod/image/2604/Artemis_II_Jack_hd_1080.jpg';
@@ -158,3 +188,6 @@ document.addEventListener('keydown', (e) => {
     modal.classList.remove('show');
   }
 });
+
+// ─── Init ──────────────────────────────────────────────────────────────────
+showRandomFact();
